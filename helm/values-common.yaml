@@ -16,26 +16,26 @@ container: {}
 
 readinessProbe:
   tcpSocket:
-    port: 5000
+    port: 8080
   initialDelaySeconds: 120
   periodSeconds: 10
   failureThreshold: 8
 
 livenessProbe:
   tcpSocket:
-    port: 5000
+    port: 8080
   initialDelaySeconds: 120
   timeoutSeconds: 1
 
-port: 5000
+port: 8080
 
 service:
   annotations:
   spec:
     type: ClusterIP
     ports:
-      - port: 5000
-        targetPort: 5000
+      - port: 80
+        targetPort: 8080
 
 image:
   imagePullPolicy: Always
