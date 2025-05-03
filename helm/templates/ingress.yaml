@@ -4,13 +4,13 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    kubernetes.io/ingress.allow-http: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.rule: "Host(`{{ .Values.ingress.rules[0].host }}`)"
     {{- if .Values.ingress.annotations.rewrite_target.enabled }}
-    nginx.ingress.kubernetes.io/rewrite-target: {{ .Values.ingress.annotations.rewrite_target.value }}
+    traefik.ingress.kubernetes.io/rewrite-target: {{ .Values.ingress.annotations.rewrite_target.value }}
     {{- end }}
     {{- if .Values.ingress.annotations.app_root.enabled }}
-    nginx.ingress.kubernetes.io/app-root: {{ .Values.ingress.annotations.app_root.value }}
+    traefik.ingress.kubernetes.io/app-root: {{ .Values.ingress.annotations.app_root.value }}
     {{- end }}
 spec:
   rules:
@@ -35,3 +35,4 @@ spec:
   {{- end }}
   {{- end }}
 {{- end }}
+

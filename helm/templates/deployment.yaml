@@ -11,6 +11,10 @@ metadata:
   annotations:
     {{- toYaml .Values.metadata.annotations | nindent 4 }}
   {{- end }}
+  {{- if .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.spec.replicas }}
   selector:
@@ -20,6 +24,9 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
+        {{- if .Values.ingress.enabled }}
+        traefik.ingress.kubernetes.io/router.rule: "Host(`{{ .Values.ingress.rules[0].host }}`)"
+        {{- end }}
     spec:      
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -59,5 +66,5 @@ spec:
         {{- if .Values.spec.livenessProbe }}
         livenessProbe:
         {{- toYaml .Values.spec.livenessProbe | nindent 10}}
-        {{- end }}
+        {{- end }} 
         {{- include "chart.env" . | indent 8 }}
