@@ -1,38 +1,57 @@
-{{- if .Values.objects.ingress.enabled }}
+# {{- if .Values.objects.ingress.enabled }}
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: {{ .Release.Name }}
+#   annotations:
+#     traefik.ingress.kubernetes.io/router.entrypoints: web
+#     traefik.ingress.kubernetes.io/router.rule: "Host(`{{ .Values.ingress.rules[0].host }}`)"
+#     {{- if .Values.ingress.annotations.rewrite_target.enabled }}
+#     traefik.ingress.kubernetes.io/rewrite-target: {{ .Values.ingress.annotations.rewrite_target.value }}
+#     {{- end }}
+#     {{- if .Values.ingress.annotations.app_root.enabled }}
+#     traefik.ingress.kubernetes.io/app-root: {{ .Values.ingress.annotations.app_root.value }}
+#     {{- end }}
+# spec:
+#   rules:
+#   {{- range .Values.ingress.rules }}
+#   - host: {{ .host }}.{{ .domain }}
+#     http:
+#       paths:
+#       - path: {{ .path }}
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: {{ $.Release.Name }}
+#             port:
+#               number: {{ $.Values.port }}
+#   {{- end }}
+#   {{- if .Values.ingress.tlsenabled }}
+#   tls:
+#   {{- range .Values.ingress.tls }}
+#   - hosts:
+#     - {{ .host }}.{{ .domain }}
+#     secretName: {{ .secretname }}
+#   {{- end }}
+#   {{- end }}
+# {{- end }}
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}
+  name: { { include "myapp.fullname" . } }
   annotations:
+    external-dns.alpha.kubernetes.io/hostname: { { .Values.ingress.host } }
     traefik.ingress.kubernetes.io/router.entrypoints: web
-    traefik.ingress.kubernetes.io/router.rule: "Host(`{{ .Values.ingress.rules[0].host }}`)"
-    {{- if .Values.ingress.annotations.rewrite_target.enabled }}
-    traefik.ingress.kubernetes.io/rewrite-target: {{ .Values.ingress.annotations.rewrite_target.value }}
-    {{- end }}
-    {{- if .Values.ingress.annotations.app_root.enabled }}
-    traefik.ingress.kubernetes.io/app-root: {{ .Values.ingress.annotations.app_root.value }}
-    {{- end }}
 spec:
   rules:
-  {{- range .Values.ingress.rules }}
-  - host: {{ .host }}.{{ .domain }}
-    http:
-      paths:
-      - path: {{ .path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ $.Release.Name }}
-            port:
-              number: {{ $.Values.port }}
-  {{- end }}
-  {{- if .Values.ingress.tlsenabled }}
-  tls:
-  {{- range .Values.ingress.tls }}  
-  - hosts:
-    - {{ .host }}.{{ .domain }}
-    secretName: {{ .secretname }}
-  {{- end }}
-  {{- end }}
-{{- end }}
-
+    - host: { { .Values.ingress.host } } # Host dinâmico, vindo do values.yaml
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: { { include "myapp.fullname" . } }
+                port:
+                  number: 80
