@@ -4,28 +4,35 @@ kind: Rollout
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Chart.Name }}
+    app: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
+        app: {{ .Release.Name }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Release.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.containerPort }}
   strategy:
-    {{- if eq .Values.rollout.strategy "canary" }}
+  {{- if eq .Values.rollout.strategy "canary" }}
     canary:
       steps:
-{{ toYaml .Values.rollout.canary.steps | indent 8 }}
-    {{- else if eq .Values.rollout.strategy "blueGreen" }}
+  {{ toYaml .Values.rollout.canary.steps | indent 6 }}
+  {{- else if eq .Values.rollout.strategy "blueGreen" }}
     blueGreen:
       activeService: {{ .Values.rollout.blueGreen.activeService }}
       previewService: {{ .Values.rollout.blueGreen.previewService }}

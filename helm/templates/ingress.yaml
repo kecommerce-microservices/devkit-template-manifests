@@ -23,6 +23,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}
+                name: {{ if and .Values.rollout.enabled (eq .Values.rollout.strategy "blueGreen") }}{{ .Values.rollout.blueGreen.activeService }}{{ else }}{{ .Release.Name }}{{ end }}
                 port:
                   number: 80
