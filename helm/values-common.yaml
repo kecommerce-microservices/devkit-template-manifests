@@ -49,3 +49,21 @@ spec:
     limits:
       cpu: 1
       memory: 1Gi
+
+deployment:
+  enabled: true
+  strategy: RollingUpdate
+
+rollout:
+  enabled: false
+  strategy: canary
+  canary:
+    steps:
+      - setWeight: 10
+      - pause: { duration: "30s" }
+      - setWeight: 50
+      - pause: { duration: "30s" }
+  blueGreen:
+    activeService: "{{ .Release.Name }}-active"
+    previewService: "{{ .Release.Name }}-preview"
+    autoPromotionEnabled: false

@@ -1,3 +1,4 @@
+{{- if .Values.deployment.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -12,6 +13,16 @@ metadata:
     {{- toYaml .Values.metadata.annotations | nindent 4 }}
   {{- end }}
 spec:
+  {{- if eq .Values.deployment.strategy "RollingUpdate" }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.rollingUpdate.maxUnavailable }}
+  {{- else }}
+  strategy:
+    type: {{ .Values.deployment.strategy }}
+  {{- end }}
   replicas: {{ .Values.spec.replicas }}
   selector:
     matchLabels:
@@ -46,3 +57,4 @@ spec:
         livenessProbe:
         {{- toYaml .Values.spec.livenessProbe | nindent 10 }}
         {{- end }}
+{{- end }}
