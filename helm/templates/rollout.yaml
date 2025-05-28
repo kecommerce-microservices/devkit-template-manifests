@@ -6,7 +6,7 @@ metadata:
   labels:
     app: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.spec.replicas }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}
@@ -26,12 +26,14 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.containerPort }}
+            - containerPort: {{ .Values.port }}
   strategy:
   {{- if eq .Values.rollout.strategy "canary" }}
     canary:
       steps:
-  {{ toYaml .Values.rollout.canary.steps | indent 6 }}
+{{- range .Values.rollout.canary.steps }}
+        - {{ toYaml . | nindent 10 }}
+{{- end }}
   {{- else if eq .Values.rollout.strategy "blueGreen" }}
     blueGreen:
       activeService: {{ .Values.rollout.blueGreen.activeService }}
