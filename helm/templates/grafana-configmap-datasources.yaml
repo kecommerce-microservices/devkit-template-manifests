@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ Release.Name }}-grafana-datasources
+  name: {{ .Values.grafana.name }}-grafana-datasources
 data:
   datasources.yaml: |
     apiVersion: 1

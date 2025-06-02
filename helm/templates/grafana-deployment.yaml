@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ Release.Name }}-grafana
+  name: {{ .Values.grafana.name }}-grafana
   labels:
-    app: {{ Release.Name }}-grafana
+    app: {{ .Values.grafana.name }}-grafana
 spec:
   replicas: {{ .Values.grafana.replicas }}
   selector:
     matchLabels:
-      app: {{ Release.Name }}-grafana
+      app: {{ .Values.grafana.name }}-grafana
   template:
     metadata:
       labels:
-        app: {{ Release.Name }}-grafana
+        app: {{ .Values.grafana.name }}-grafana
     spec:
       containers:
-        - name: {{ Release.Name }}-grafana
+        - name: {{ .Values.grafana.name }}-grafana
           image: grafana/grafana:9.4.7
           ports:
             - containerPort: 3000
@@ -41,4 +41,4 @@ spec:
       volumes:
         - name: datasources
           configMap:
-            name: {{ Release.Name }}-grafana-datasources
+            name: {{ .Values.grafana.name }}-grafana-datasources
