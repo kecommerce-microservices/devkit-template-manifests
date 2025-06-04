@@ -1,29 +1,29 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Values.jaeger-ui.name }}-jaeger-query-ingress
+  name: {{ .Values.jaeger.name }}-jaeger-query-ingress
   namespace: {{ .Values.namespace }}
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: {{ .Values.jaeger-ui.ingress.host }}
-    traefik.ingress.kubernetes.io/router.entrypoints: {{ ternary "websecure" "web" .Values.jaeger-ui.ingress.tls.enabled }}
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.jaeger.ingress.host }}
+    traefik.ingress.kubernetes.io/router.entrypoints: {{ ternary "websecure" "web" .Values.jaeger.ingress.tls.enabled }}
     {{- if .Values.ingress.tls.enabled }}
-    cert-manager.io/cluster-issuer: {{ .Values.jaeger-ui.ingress.tls.clusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.jaeger.ingress.tls.clusterIssuer }}
     {{- end }}
 spec:
-  {{- if .Values.jaeger-ui.ingress.tls.enabled }}
+  {{- if .Values.jaeger.ingress.tls.enabled }}
   tls:
     - hosts:
-        - {{ .Values.jaeger-ui.ingress.host }}
-      secretName: jaeger-ui-tls
+        - {{ .Values.jaeger.ingress.host }}
+      secretName: jaeger-tls
   {{- end }}
   rules:
-    - host: {{ .Values.jaeger-ui.ingress.host }}
+    - host: {{ .Values.jaeger.ingress.host }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: {{ .Values.jaeger-ui.name }}-jaeger-query
+                name: {{ .Values.jaeger.name }}-jaeger-query
                 port:
-                  number: {{ .Values.jaeger-ui.service.port }}
+                  number: {{ .Values.jaeger.service.port }}

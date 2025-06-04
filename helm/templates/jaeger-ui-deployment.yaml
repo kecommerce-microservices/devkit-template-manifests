@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.jaeger-ui.name }}-jaeger-query
+  name: {{ .Values.jaeger.name }}-jaeger-query
   namespace: {{ .Values.namespace }}
   labels:
-    app: {{ .Values.jaeger-ui.name }}-jaeger-query
+    app: {{ .Values.jaeger.name }}-jaeger-query
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.jaeger-ui.name }}-jaeger-query
+      app: {{ .Values.jaeger.name }}-jaeger-query
   template:
     metadata:
       labels:
-        app: {{ .Values.jaeger-ui.name }}-jaeger-query
+        app: {{ .Values.jaeger.name }}-jaeger-query
     spec:
       containers:
-      - name: {{ .Values.jaeger-ui.name }}-jaeger-query
+      - name: {{ .Values.jaeger.name }}-jaeger-query
         image: jaegertracing/jaeger-query:latest
         imagePullPolicy: Always
         ports:
@@ -26,11 +26,11 @@ spec:
         - name: SPAN_STORAGE_TYPE
           value: elasticsearch
         - name: ES_SERVER_URLS
-          value: "{{ .Values.jaeger-ui.elasticsearch.url }}"
+          value: "{{ .Values.jaeger.elasticsearch.url }}"
         - name: ES_INDEX
-          value: "{{ .Values.jaeger-ui.elasticsearch.index }}"
+          value: "{{ .Values.jaeger.elasticsearch.index }}"
         - name: ES_USERNAME
-          value: "{{ .Values.jaeger-ui.elasticsearch.username }}"
+          value: "{{ .Values.jaeger.elasticsearch.username }}"
         - name: ES_PASSWORD
           valueFrom:
             secretKeyRef:
