@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.jaeger-ui.name }}-jaeger-query
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.jaeger-ui.name }}-jaeger-query
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.jaeger-ui.name }}-jaeger-query
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.jaeger-ui.name }}-jaeger-query
+    spec:
+      containers:
+      - name: {{ .Values.jaeger-ui.name }}-jaeger-query
+        image: jaegertracing/jaeger-query:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 16686  # UI
+        - containerPort: 16687  # gRPC
+        env:
+        - name: SPAN_STORAGE_TYPE
+          value: elasticsearch
+        - name: ES_SERVER_URLS
+          value: "{{ .Values.jaeger-ui.elasticsearch.url }}"
+        - name: ES_INDEX
+          value: "{{ .Values.jaeger-ui.elasticsearch.index }}"
+        - name: ES_USERNAME
+          value: "{{ .Values.jaeger-ui.elasticsearch.username }}"
+        - name: ES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jaeger-elastic-password
+              key: password
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 16686
+          initialDelaySeconds: 5
+          periodSeconds: 10

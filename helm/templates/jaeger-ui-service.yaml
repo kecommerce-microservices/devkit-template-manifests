@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.jaeger-ui.name }}-jaeger-query
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.jaeger-ui.name }}-jaeger-query
+spec:
+  type: {{ .Values.jaeger-ui.service.type }}
+  ports:
+    - port: {{ .Values.jaeger-ui.service.port }}
+      targetPort: 16686
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Values.jaeger-ui.name }}-jaeger-query
