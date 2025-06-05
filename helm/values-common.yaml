@@ -8,6 +8,10 @@ metadata:
   annotations: {}
   labels: {}
 
+template:
+  metadata:
+  annotations: {}
+
 imagePullSecrets: {}
 
 volumes: {}
