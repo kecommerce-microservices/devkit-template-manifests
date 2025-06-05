@@ -32,7 +32,7 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
-      {{- if .Values.template.metadata.annotations }}
+      {{- if and .Values.template.metadata .Values.template.metadata.annotations }}
       annotations:
         {{- toYaml .Values.template.metadata.annotations | nindent 4 }}
       {{- end }}
