@@ -18,6 +18,7 @@ data:
         endpoint: ${NEW_RELIC_OTLP_ENDPOINT}
         headers:
           api-key: ${NEW_RELIC_API_KEY}
+        compression: gzip
 
       elasticsearch:
         endpoint: ${ES_ENDPOINT}
@@ -63,8 +64,6 @@ data:
           - key: "telemetry.sdk.version"
             action: delete
 
-      batch: {}
-
     extensions:
       health_check: {}
 
@@ -73,11 +72,11 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [memory_limiter, resource, batch, retry]
+          processors: [memory_limiter, resource, retry]
           exporters: [otlphttp/newrelic]
         metrics:
           receivers: [otlp]
-          processors: [memory_limiter, batch, retry]
+          processors: [memory_limiter, retry]
           exporters: [otlphttp/newrelic]
         logs:
           receivers: [otlp]
