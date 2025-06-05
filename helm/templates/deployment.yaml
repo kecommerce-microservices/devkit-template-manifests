@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
   labels:
     app: {{ .Release.Name }}
   {{- with .Values.metadata.labels }}
@@ -31,6 +32,10 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
+      {{- if .Values.template.metadata.annotations }}
+      annotations:
+        {{- toYaml .Values.template.metadata.annotations | nindent 4 }}
+      {{- end }}
     spec:      
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:

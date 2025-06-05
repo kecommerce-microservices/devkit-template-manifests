@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.otel.name }}-otel-config
+  namespace: {{ .Values.namespace }}
+data:
+  otel-collector-config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+    exporters:
+      otlphttp/newrelic:
+        endpoint: ${NEW_RELIC_OTLP_ENDPOINT}
+        headers:
+          api-key: ${NEW_RELIC_API_KEY}
+
+      elasticsearch:
+        endpoint: ${ES_ENDPOINT}
+        tls:
+          insecure_skip_verify: true
+        api_key: ${ES_API_KEY}
+
+    processors:
+      batch:
+        timeout: 5s
+        send_batch_size: 512
+        send_batch_max_size: 1024
+      memory_limiter:
+        check_interval: 1s
+        limit_mib: 512
+        spike_limit_mib: 128
+      retry:
+        enabled: true
+
+      transform/logs:
+         log_statements:
+         - context: log
+           statements:
+             - delete_key(attributes, "code.function")
+             - delete_key(attributes, "code.lineno")
+         - context: resource
+           statements:
+             - set(attributes["elasticsearch.index"], Concat(["logs", attributes["service.name"], attributes["environment"]], "-"))
+      resource:
+        attributes:
+          - key: "process.pid"
+            action: delete
+          - key: "process.executable.path"
+            action: delete
+          - key: "process.command_line"
+            action: delete
+          - key: "process.runtime.name"
+            action: delete
+          - key: "telemetry.sdk.language"
+            action: delete
+          - key: "telemetry.sdk.name"
+            action: delete
+          - key: "telemetry.sdk.version"
+            action: delete
+
+      batch: {}
+
+    extensions:
+      health_check: {}
+
+    service:
+      extensions: [health_check]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [memory_limiter, resource, batch, retry]
+          exporters: [otlphttp/newrelic]
+        metrics:
+          receivers: [otlp]
+          processors: [memory_limiter, batch, retry]
+          exporters: [otlphttp/newrelic]
+        logs:
+          receivers: [otlp]
+          processors: [memory_limiter, transform/logs, resource, batch, retry]
+          exporters: [elasticsearch]

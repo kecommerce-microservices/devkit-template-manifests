@@ -3,8 +3,16 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
   labels:
     app: {{ .Release.Name }}
+  {{- with .Values.metadata.labels }}
+    {{- toYaml .Values.metadata.labels | nindent 4 }}
+  {{- end }}
+  {{- if .Values.metadata.annotations }}
+  annotations:
+    {{- toYaml .Values.metadata.annotations | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.spec.replicas }}
   selector:
@@ -14,6 +22,10 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
+      {{- if .Values.template.metadata.annotations }}
+      annotations:
+        {{- toYaml .Values.template.metadata.annotations | nindent 4 }}
+      {{- end }}
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
