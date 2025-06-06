@@ -48,7 +48,7 @@ data:
              - delete_key(attributes, "code.lineno")
          - context: resource
            statements:
-             - set(attributes["elasticsearch.index"], Concat(["logs", attributes["service.name"], attributes["environment"]], "-"))
+             - set(attributes["elasticsearch.index"], Concat(["logs", attributes["service.name"], attributes["deployment.environment.name"]], "-"))
       resource:
         attributes:
           - key: "process.pid"
