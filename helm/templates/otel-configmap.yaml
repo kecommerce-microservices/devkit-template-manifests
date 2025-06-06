@@ -23,6 +23,8 @@ data:
         headers:
           api-key: ${env:NEW_RELIC_API_KEY}
         compression: gzip
+        metrics:
+          resource_attributes_as_tags: true
 
       elasticsearch:
         endpoint: ${env:ES_ENDPOINT}
