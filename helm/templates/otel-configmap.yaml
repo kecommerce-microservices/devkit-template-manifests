@@ -14,6 +14,10 @@ data:
             endpoint: 0.0.0.0:4318
 
     exporters:
+      datadog:
+        api:
+          site: "us5.datadoghq.com"
+          key: ${env:DATADOG_API_KEY}
       otlphttp/newrelic:
         endpoint: ${env:NEW_RELIC_OTLP_ENDPOINT}
         headers:
@@ -75,7 +79,7 @@ data:
         metrics:
           receivers: [otlp]
           processors: [memory_limiter]
-          exporters: [otlphttp/newrelic]
+          exporters: [datadog]
         logs:
           receivers: [otlp]
           processors: [transform/logs, resource]
