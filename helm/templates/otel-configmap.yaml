@@ -61,12 +61,6 @@ data:
             action: delete
           - key: "process.runtime.name"
             action: delete
-          - key: "telemetry.sdk.language"
-            action: delete
-          - key: "telemetry.sdk.name"
-            action: delete
-          - key: "telemetry.sdk.version"
-            action: delete
 
     extensions:
       health_check: {}
