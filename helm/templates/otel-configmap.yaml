@@ -15,16 +15,16 @@ data:
 
     exporters:
       otlphttp/newrelic:
-        endpoint: ${NEW_RELIC_OTLP_ENDPOINT}
+        endpoint: ${env:NEW_RELIC_OTLP_ENDPOINT}
         headers:
-          api-key: ${NEW_RELIC_API_KEY}
+          api-key: ${env:NEW_RELIC_API_KEY}
         compression: gzip
 
       elasticsearch:
-        endpoint: ${ES_ENDPOINT}
+        endpoint: ${env:ES_ENDPOINT}
         tls:
           insecure_skip_verify: true
-        api_key: ${ES_API_KEY}
+        api_key: ${env:ES_API_KEY}
 
     processors:
       batch:
@@ -35,8 +35,6 @@ data:
         check_interval: 1s
         limit_mib: 512
         spike_limit_mib: 128
-      retry:
-        enabled: true
 
       transform/logs:
          log_statements:
@@ -72,13 +70,13 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [memory_limiter, resource, retry]
+          processors: [resource]
           exporters: [otlphttp/newrelic]
         metrics:
           receivers: [otlp]
-          processors: [memory_limiter, retry]
+          processors: [memory_limiter]
           exporters: [otlphttp/newrelic]
         logs:
           receivers: [otlp]
-          processors: [memory_limiter, transform/logs, resource, batch, retry]
+          processors: [transform/logs, resource]
           exporters: [elasticsearch]

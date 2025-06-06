@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.grafana.name }}-grafana-datasource
+data:
+  datasource.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: devkit-grafana-datasource
+        type: newrelic-datasource
+        access: proxy
+        jsonData:
+          accountId: ${DATASOURCE_ACCOUNT_ID}
+        secureJsonData:
+          apiKey: ${DATASOURCE_API_KEY}

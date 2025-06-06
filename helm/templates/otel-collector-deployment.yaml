@@ -18,6 +18,7 @@ spec:
       containers:
         - name: {{ .Values.otel.name }}-otel
           image: otel/opentelemetry-collector-contrib:latest
+          args: ["--config", "/etc/otel/otel-collector-config.yaml"]
           env:
             - name: ES_ENDPOINT
               value: {{ .Values.otel.elasticsearch.endpoint }}
