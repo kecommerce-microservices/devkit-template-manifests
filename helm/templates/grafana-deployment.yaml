@@ -48,7 +48,7 @@ spec:
       volumes:
         - name: dashboards
           configMap:
-            name: ${{ .Values.grafana.name }}-grafana-dashboard-config
+            name: {{ .Values.grafana.name }}-grafana-dashboard-config
         - name: datasources
           configMap:
-            name: ${{ .Values.grafana.name }}-grafana-datasource
+            name: {{ .Values.grafana.name }}-grafana-datasource
