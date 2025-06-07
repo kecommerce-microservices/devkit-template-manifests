@@ -15,6 +15,7 @@ spec:
       labels:
         app: {{ .Values.otel.name }}-otel
     spec:
+      serviceAccountName: {{ .Values.otel.rbac.serviceAccountName }}
       containers:
         - name: {{ .Values.otel.name }}-otel
           image: otel/opentelemetry-collector-contrib:latest
