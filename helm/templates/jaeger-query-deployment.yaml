@@ -25,5 +25,15 @@ spec:
               value: {{ .Values.jaeger.storage.indexPrefix }}
             - name: ES_HEALTH_CHECK_TIMEOUT
               value: 2m
+            - name: ES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.jaeger.storage.secretName }}
+                  key: username
+            - name: ES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.jaeger.storage.secretName }}
+                  key: password
           ports:
             - containerPort: 16686
