@@ -7,6 +7,8 @@ rules:
     resources:
       - pods
       - namespaces
+      - nodes          # adiciona permissão para nodes
+      - nodes/stats    # adiciona permissão para nodes/stats (subresource)
     verbs:
       - get
       - watch
@@ -14,6 +16,7 @@ rules:
   - apiGroups: ["apps"]
     resources:
       - replicasets
+      - deployments
     verbs:
       - get
       - list
@@ -44,3 +47,45 @@ subjects:
   - kind: ServiceAccount
     name: {{ .Values.otel.rbac.serviceAccountName }}
     namespace: {{ .Values.namespace }}
+
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: {{ .Values.otel.rbac.serviceAccountName }}
+#   namespace: {{ .Values.namespace }}
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: Role
+# metadata:
+#   name: {{ .Values.otel.rbac.roleName }}
+#   namespace: {{ .Values.namespace }}
+# rules:
+#   - apiGroups: [""]
+#     resources:
+#       - pods
+#     verbs:
+#       - get
+#       - watch
+#       - list
+#   - apiGroups: ["apps"]
+#     resources:
+#       - replicasets
+#       - deployments
+#     verbs:
+#       - get
+#       - list
+#       - watch
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#   name: {{ .Values.otel.rbac.roleBindingName }}
+#   namespace: {{ .Values.namespace }}
+# subjects:
+#   - kind: ServiceAccount
+#     name: {{ .Values.otel.rbac.serviceAccountName }}
+#     namespace: {{ .Values.namespace }}
+# roleRef:
+#   kind: Role
+#   name: {{ .Values.otel.rbac.roleName }}
+#   apiGroup: rbac.authorization.k8s.io

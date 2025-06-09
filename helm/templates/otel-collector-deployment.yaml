@@ -21,6 +21,12 @@ spec:
           image: otel/opentelemetry-collector-contrib:latest
           args: ["--config", "/etc/otel/otel-collector-config.yaml"]
           env:
+            - name: NAMESPACE
+              value: {{ .Values.namespace }}
+            - name: KUBELET_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
             - name: ES_ENDPOINT
               value: {{ .Values.otel.elasticsearch.endpoint }}
             - name: ES_API_KEY
@@ -28,18 +34,15 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.otel.elasticsearch.secretName }}
                   key: apiKey
-            - name: NEW_RELIC_OTLP_ENDPOINT
-              value: {{ .Values.otel.newRelic.endpoint }}
-            - name: NEW_RELIC_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.otel.newRelic.secretName }}
-                  key: apiKey
             - name: DATADOG_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.otel.dataDog.secretName }}
+                  name: {{ .Values.otel.datadog.secretName }}
                   key: apiKey
+            - name: DATADOG_ENDPOINT
+              value: {{ .Values.otel.datadog.endpoint }}
+            - name: JAEGER_ENDPOINT
+              value: {{ .Values.otel.jaeger.endpoint }}
           ports:
             - containerPort: 4317
             - containerPort: 4318

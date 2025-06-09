@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.jaeger.name }}-jaeger-query
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.jaeger.name }}-jaeger-query
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.jaeger.name }}-jaeger-query
+    spec:
+      containers:
+        - name: {{ .Values.jaeger.name }}-jaeger-query
+          image: jaegertracing/jaeger-query:2.0.0
+          env:
+            - name: SPAN_STORAGE_TYPE
+              value: {{ .Values.jaeger.storage.type }}
+            - name: ES_SERVER_URLS
+              value: {{ .Values.jaeger.storage.url }}
+            - name: ES_INDEX_PREFIX
+              value: {{ .Values.jaeger.storage.indexPrefix }}
+          ports:
+            - containerPort: 16686
