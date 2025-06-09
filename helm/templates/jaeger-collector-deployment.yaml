@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: {{ .Values.jaeger.name }}-jaeger-collector
-          image: jaegertracing/jaeger-collector:2.0.0
+          image: jaegertracing/jaeger-collector:latest
           env:
             - name: SPAN_STORAGE_TYPE
               value: {{ .Values.jaeger.storage.type }}
