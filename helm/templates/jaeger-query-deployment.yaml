@@ -23,5 +23,7 @@ spec:
               value: {{ .Values.jaeger.storage.url }}
             - name: ES_INDEX_PREFIX
               value: {{ .Values.jaeger.storage.indexPrefix }}
+            - name: ES_HEALTH_CHECK_TIMEOUT
+              value: 2m
           ports:
             - containerPort: 16686

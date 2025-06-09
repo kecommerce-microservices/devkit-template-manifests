@@ -23,6 +23,8 @@ spec:
               value: {{ .Values.jaeger.storage.url }}
             - name: ES_INDEX_PREFIX
               value: {{ .Values.jaeger.storage.indexPrefix }}
+            - name: ES_HEALTH_CHECK_TIMEOUT
+              value: 2m
             - name: ES_API_KEY
               valueFrom:
                 secretKeyRef:
