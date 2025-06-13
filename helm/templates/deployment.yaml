@@ -24,7 +24,7 @@ spec:
   strategy:
     type: {{ .Values.deployment.strategy }}
   {{- end }}
-  replicas: {{ .Values.spec.replicas }}
+  # replicas: {{ .Values.spec.replicas }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}

@@ -14,7 +14,7 @@ metadata:
     {{- toYaml .Values.metadata.annotations | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.spec.replicas }}
+  # replicas: {{ .Values.spec.replicas }}
   selector:
     matchLabels:
       app: {{ .Release.Name }}
